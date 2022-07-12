@@ -76,6 +76,17 @@ class GameFragment : Fragment() {
             binding.wordText.text = newWord.toString()
         })
 
+        viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { hasFinished ->
+            if (hasFinished) {
+
+                gameFinished()
+
+                // This ensures that the code is executed only once, and not being fetching again on screen rotations.
+                viewModel.onGameFinishComplete()
+
+            }
+        })
+
         return binding.root
 
     }

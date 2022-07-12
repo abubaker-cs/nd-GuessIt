@@ -37,7 +37,7 @@ class GameViewModel : ViewModel() {
 
 
     init {
-        Log.i("GameViewModel", "GameViewModel created!")
+        _eventGameFinish.value = false
         resetList()
         nextWord()
 
@@ -93,7 +93,7 @@ class GameViewModel : ViewModel() {
     private fun nextWord() {
         //Select and remove a word from the list
         if (wordList.isEmpty()) {
-            // gameFinished()
+            _eventGameFinish.value = true
         } else {
             _word.value = wordList.removeAt(0)
         }
@@ -109,6 +109,11 @@ class GameViewModel : ViewModel() {
     fun onCorrect() {
         _score.value = (score.value)?.plus(1) // score++
         nextWord()
+    }
+
+    // It is representing that the event has been handled.
+    fun onGameFinishComplete() {
+        _eventGameFinish.value = false
     }
 
 }

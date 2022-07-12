@@ -14,6 +14,12 @@ import androidx.lifecycle.ViewModel
  * 3. It should not decide what to display on screen or process what happens during an input event.
  * 4. The ViewModel never contains references to activities, fragments, or views.
  */
+
+private val CORRECT_BUZZ_PATTERN = longArrayOf(100, 100, 100, 100, 100, 100)
+private val PANIC_BUZZ_PATTERN = longArrayOf(0, 200)
+private val GAME_OVER_BUZZ_PATTERN = longArrayOf(0, 2000)
+private val NO_BUZZ_PATTERN = longArrayOf(0)
+
 class GameViewModel : ViewModel() {
 
     companion object {
@@ -28,13 +34,25 @@ class GameViewModel : ViewModel() {
         const val COUNTDOWN_TIME = 10000L
     }
 
+    enum class BuzzType(val pattern: LongArray) {
+        CORRECT(CORRECT_BUZZ_PATTERN),
+        GAME_OVER(GAME_OVER_BUZZ_PATTERN),
+        COUNTDOWN_PANIC(PANIC_BUZZ_PATTERN),
+        NO_BUZZ(NO_BUZZ_PATTERN)
+    }
+
     private val timer: CountDownTimer
 
     private val _currentTime = MutableLiveData<Long>()
     val currentTime: LiveData<Long>
         get() = _currentTime
 
-    // Transformations.map()
+    // Event that triggers the phone to buzz using different patterns, determined by BuzzType
+    private val _eventBuzz = MutableLiveData<BuzzType>()
+    val eventBuzz: LiveData<BuzzType>
+        get() = _eventBuzz
+
+    // Transformations.map() : to convert the current time into a formatted String.
     val currentTimeString = Transformations.map(currentTime) { time ->
 
         //
@@ -89,6 +107,11 @@ class GameViewModel : ViewModel() {
         timer.start()
         // DateUtils.formatElapsedTime(newTime)
     }
+
+    fun onBuzzComplete() {
+        _eventBuzz.value = BuzzType.NO_BUZZ
+    }
+
 
     /**
      * This method will be called when this ViewModel is no longer used and will be destroyed.
@@ -162,5 +185,4 @@ class GameViewModel : ViewModel() {
     fun onGameFinishComplete() {
         _eventGameFinish.value = false
     }
-
 }

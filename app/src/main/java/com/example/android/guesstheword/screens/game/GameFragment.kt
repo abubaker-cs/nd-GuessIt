@@ -61,6 +61,13 @@ class GameFragment : Fragment() {
         // #2. Pass in ViewModel
         binding.gameViewModel = viewModel
 
+        // #2.1 Set Lifecycle Owner
+        /**
+         * To make your data binding lifecycle aware and to have it play nicely with LiveData,
+         * you need to call binding.lifecycleOwner.
+         */
+        binding.lifecycleOwner = this
+
 
         // #3. Remove setOnClickListener{} as we are using 2-way databinding through XML
         // binding.correctButton.setOnClickListener {
@@ -76,9 +83,9 @@ class GameFragment : Fragment() {
             binding.scoreText.text = newScore.toString()
         })
 
-        viewModel.word.observe(viewLifecycleOwner, Observer { newWord ->
-            binding.wordText.text = newWord.toString()
-        })
+        // viewModel.word.observe(viewLifecycleOwner, Observer { newWord ->
+        //     binding.wordText.text = newWord.toString()
+        // })
 
         viewModel.currentTime.observe(viewLifecycleOwner, Observer { newTime ->
             binding.timerText.text = DateUtils.formatElapsedTime(newTime)

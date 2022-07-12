@@ -18,7 +18,6 @@ package com.example.android.guesstheword.screens.game
 
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,16 +56,20 @@ class GameFragment : Fragment() {
         )
 
         //
-        Log.i("GameFragment", "Called ViewModelProvider()")
         viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
-        binding.correctButton.setOnClickListener {
-            viewModel.onCorrect()
-        }
+        // #2. Pass in ViewModel
+        binding.gameViewModel = viewModel
 
-        binding.skipButton.setOnClickListener {
-            viewModel.onSkip()
-        }
+
+        // #3. Remove setOnClickListener{} as we are using 2-way databinding through XML
+        // binding.correctButton.setOnClickListener {
+        //     viewModel.onCorrect()
+        // }
+
+        // binding.skipButton.setOnClickListener {
+        //     viewModel.onSkip()
+        // }
 
         /** Methods for updating the UI **/
         viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
